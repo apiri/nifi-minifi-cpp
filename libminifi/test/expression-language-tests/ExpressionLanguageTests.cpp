@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+#include "time.h"
+
 #include <memory>
 #include <string>
 
@@ -1191,6 +1193,40 @@ TEST_CASE("Encode Decode URL", "[expressionEncodeDecodeURL]") {  // NOLINT
   auto flow_file_a = std::make_shared<MockFlowFile>();
   flow_file_a->addAttribute("message", "some value with spaces");
   REQUIRE("some value with spaces" == expr({flow_file_a}).asString());
+
+TEST_CASE("Parse Date", "[expressionParseDate]") {  // NOLINT
+  auto expr = expression::compile("${message:toDate('%Y/%m/%d', 'America/Los_Angeles')}");
+
+  auto flow_file_a = std::make_shared<MockFlowFile>();
+  flow_file_a->addAttribute("message", "2014/04/30");
+  REQUIRE("1398841200000" == expr({flow_file_a}).asString());
+}
+
+TEST_CASE("Format Date", "[expressionFormatDate]") {  // NOLINT
+  auto expr = expression::compile("${message:format('%m-%d-%Y', 'GMT')}");
+
+  auto flow_file_a = std::make_shared<MockFlowFile>();
+  flow_file_a->addAttribute("message", "1394755200000");
+  REQUIRE("03-14-2014" == expr({flow_file_a}).asString());
+}
+
+TEST_CASE("Reformat Date", "[expressionReformatDate]") {  // NOLINT
+  auto expr = expression::compile("${message:toDate('%Y/%m/%d', 'GMT'):format('%m-%d-%Y', 'America/New_York')}");
+
+  auto flow_file_a = std::make_shared<MockFlowFile>();
+  flow_file_a->addAttribute("message", "2014/03/14");
+  REQUIRE("03-13-2014" == expr({flow_file_a}).asString());
+}
+
+TEST_CASE("Now Date", "[expressionNowDate]") {  // NOLINT
+  auto expr = expression::compile("${now():format('%Y')}");
+
+  auto flow_file_a = std::make_shared<MockFlowFile>();
+  flow_file_a->addAttribute("message", "2014/03/14");
+  time_t t = time(nullptr);
+  struct tm *lt = localtime(&t);
+
+  REQUIRE((lt->tm_year + 1900) == expr({flow_file_a}).asUnsignedLong());
 }
 
 TEST_CASE("IP", "[expressionIP]") {  // NOLINT
