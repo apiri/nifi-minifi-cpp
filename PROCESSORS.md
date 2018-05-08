@@ -22,7 +22,7 @@
 - [CompressContent](#compresscontent)
 - [ConsumeMQTT](#consumemqtt)
 - [ConvertHeartBeat](#convertheartbeat)
-- [ConvertJSONAack](#convertjsonack)
+- [ConvertJSONAck](#convertjsonack)
 - [ConvertUpdate](#convertupdate)
 - [ExecuteProcess](#executeprocess)
 - [ExecuteScript](#executescript)
@@ -115,7 +115,7 @@ default values, and whether a property supports the NiFi Expression Language.
 | Listening topic | | | The topic on which we will listen to get MQTT C2 messages |
 
 
-## ConvertJSONAack
+## ConvertJSONAck
 
 This Processor parses C2 respones (acknowledgements) and forwards them to the MQTT agent.    
 
