@@ -54,7 +54,9 @@ RUN apk --update --no-cache upgrade && apk --update --no-cache add gcc \
 	libressl-dev \
 	zlib-dev \
 	bzip2-dev \
-	python3-dev
+	python3-dev \
+    autoconf \
+    libtool
 
 ENV USER minificpp
 ENV MINIFI_BASE_DIR /opt/minifi
@@ -76,7 +78,7 @@ ENV MINIFI_HOME $MINIFI_BASE_DIR/nifi-minifi-cpp-$MINIFI_VERSION
 RUN cd $MINIFI_BASE_DIR \
 	&& mkdir build \
 	&& cd build \
-	&& cmake -DOPENSSL_FORCE_SHARED=true -DDISABLE_JEMALLOC=ON -DSTATIC_BUILD= -DSKIP_TESTS=true -DENABLE_JNI=ON .. \
+	&& cmake -DOPENSSL_FORCE_SHARED=true -DENABLE_LIBRDKAFKA=ON -DDISABLE_JEMALLOC=ON -DSTATIC_BUILD= -DSKIP_TESTS=true -DENABLE_JNI=ON .. \
 	&& make -j8 package \
 	&& tar -xzvf $MINIFI_BASE_DIR/build/nifi-minifi-cpp-$MINIFI_VERSION-bin.tar.gz -C $MINIFI_BASE_DIR
 
